@@ -1,0 +1,256 @@
+{
+  "best_model_name": "SVM (RBF)",
+  "selection_metric": "roc_auc",
+  "best_cv_value": 0.8995339061345158,
+  "features": [
+    "age",
+    "sex",
+    "dataset",
+    "cp",
+    "trestbps",
+    "chol",
+    "fbs",
+    "restecg",
+    "thalch",
+    "exang",
+    "oldpeak",
+    "slope",
+    "ca",
+    "thal"
+  ],
+  "target": "num",
+  "feature_meta": {
+    "age": {
+      "type": "num",
+      "label": "Age",
+      "min": 28.0,
+      "max": 77.0,
+      "subtype": "int",
+      "order": 0
+    },
+    "sex": {
+      "type": "cat",
+      "label": "Sex",
+      "choices": [
+        [
+          "0",
+          "Female"
+        ],
+        [
+          "1",
+          "Male"
+        ]
+      ],
+      "order": 1
+    },
+    "dataset": {
+      "type": "cat",
+      "label": "Dataset",
+      "choices": [
+        [
+          "Cleveland",
+          "Cleveland"
+        ],
+        [
+          "Hungary",
+          "Hungary"
+        ],
+        [
+          "Switzerland",
+          "Switzerland"
+        ],
+        [
+          "VA Long Beach",
+          "VA Long Beach"
+        ]
+      ],
+      "order": 2
+    },
+    "cp": {
+      "type": "cat",
+      "label": "Chest Pain Type (cp)",
+      "choices": [
+        [
+          "0",
+          "Typical angina"
+        ],
+        [
+          "1",
+          "Atypical angina"
+        ],
+        [
+          "2",
+          "Non-anginal pain"
+        ],
+        [
+          "3",
+          "Asymptomatic"
+        ]
+      ],
+      "order": 3
+    },
+    "trestbps": {
+      "type": "num",
+      "label": "Resting Blood Pressure (trestbps)",
+      "min": 0.0,
+      "max": 200.0,
+      "subtype": "float",
+      "order": 4
+    },
+    "chol": {
+      "type": "num",
+      "label": "Serum Cholesterol (chol)",
+      "min": 0.0,
+      "max": 603.0,
+      "subtype": "float",
+      "order": 5
+    },
+    "fbs": {
+      "type": "cat",
+      "label": "Fasting Blood Sugar > 120 mg/dl (fbs)",
+      "choices": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ],
+      "order": 6
+    },
+    "restecg": {
+      "type": "cat",
+      "label": "Resting ECG (restecg)",
+      "choices": [
+        [
+          "0",
+          "Normal"
+        ],
+        [
+          "1",
+          "ST-T abnormality"
+        ],
+        [
+          "2",
+          "LV hypertrophy"
+        ]
+      ],
+      "order": 7
+    },
+    "thalch": {
+      "type": "num",
+      "label": "Thalch",
+      "min": 60.0,
+      "max": 202.0,
+      "subtype": "float",
+      "order": 8
+    },
+    "exang": {
+      "type": "cat",
+      "label": "Exercise Induced Angina (exang)",
+      "choices": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ],
+      "order": 9
+    },
+    "oldpeak": {
+      "type": "num",
+      "label": "ST Depression (oldpeak)",
+      "min": -2.6,
+      "max": 6.2,
+      "subtype": "float",
+      "order": 10
+    },
+    "slope": {
+      "type": "cat",
+      "label": "Slope (slope)",
+      "choices": [
+        [
+          "0",
+          "Upsloping"
+        ],
+        [
+          "1",
+          "Flat"
+        ],
+        [
+          "2",
+          "Downsloping"
+        ]
+      ],
+      "order": 11
+    },
+    "ca": {
+      "type": "cat",
+      "label": "Number of Major Vessels (ca)",
+      "choices": [
+        [
+          "0",
+          "0"
+        ],
+        [
+          "1",
+          "1"
+        ],
+        [
+          "2",
+          "2"
+        ],
+        [
+          "3",
+          "3"
+        ],
+        [
+          "4",
+          "4"
+        ]
+      ],
+      "order": 12
+    },
+    "thal": {
+      "type": "cat",
+      "label": "Thal (thal)",
+      "choices": [
+        [
+          "0",
+          "Unknown"
+        ],
+        [
+          "1",
+          "Normal"
+        ],
+        [
+          "2",
+          "Fixed defect"
+        ],
+        [
+          "3",
+          "Reversible defect"
+        ]
+      ],
+      "order": 13
+    }
+  },
+  "label_mapping": {
+    "original_target": "num",
+    "unique_values": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "rule": "numeric_gt0_is_positive",
+    "positive_label": 1,
+    "negative_label": 0
+  }
+}
