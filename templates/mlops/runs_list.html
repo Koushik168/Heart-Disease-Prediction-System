@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Runs — HeartCloud{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+  <div>
+    <h2 class="fw-bold mb-0"><i class="bi bi-layers me-2"></i>Training Runs</h2>
+    <div class="text-muted">Latest 30 runs.</div>
+  </div>
+  <a class="btn btn-soft btn-pill" href="{% url 'ml_upload' %}"><i class="bi bi-cloud-arrow-up me-1"></i>Upload Dataset</a>
+</div>
+
+<div class="card cloud-card">
+  <div class="card-body p-4 p-md-5">
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Run</th>
+            <th>Status</th>
+            <th>Dataset</th>
+            <th>Best Model</th>
+            <th>Created</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in runs %}
+            <tr>
+              <td><b>#{{ r.id }}</b></td>
+              <td>
+                {% if r.status == "COMPLETED" %}
+                  <span class="badge text-bg-success">COMPLETED</span>
+                {% elif r.status == "RUNNING" %}
+                  <span class="badge text-bg-warning">RUNNING</span>
+                {% else %}
+                  <span class="badge text-bg-danger">FAILED</span>
+                {% endif %}
+              </td>
+              <td>{{ r.dataset.name }}</td>
+              <td><b>{{ r.best_model_name }}</b></td>
+              <td>{{ r.created_at|date:"Y-m-d H:i" }}</td>
+              <td><a class="btn btn-outline-primary btn-pill" href="{% url 'ml_run_detail' r.id %}"><i class="bi bi-eye me-1"></i>View</a></td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="6" class="text-muted">No runs yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
