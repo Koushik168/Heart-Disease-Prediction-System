@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Admin ML — Upload Dataset{% endblock %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+  <div>
+    <h2 class="fw-bold mb-0"><i class="bi bi-cloud-arrow-up me-2"></i>Admin ML Pipeline</h2>
+    <div class="text-muted">Upload a heart-disease CSV. The app auto-detects the target column and builds a flexible pipeline for future datasets.</div>
+  </div>
+  <a class="btn btn-soft btn-pill" href="{% url 'ml_runs' %}"><i class="bi bi-layers me-1"></i>View Runs</a>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-6">
+    <div class="card cloud-card">
+      <div class="card-body p-4 p-md-5">
+        <h5 class="fw-bold mb-1">Upload CSV</h5>
+        <p class="text-muted small mb-4">Works with UCI / Kaggle / Framingham-style datasets. Recommended target names: <span class="badge-soft px-2 py-1">target</span>, <span class="badge-soft px-2 py-1">HeartDisease</span>, <span class="badge-soft px-2 py-1">TenYearCHD</span>, <span class="badge-soft px-2 py-1">num</span>.</p>
+
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="row g-3">
+            {% for field in form %}
+              <div class="col-12">
+                <label class="form-label fw-semibold">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                  <div class="text-danger small">{{ field.errors|striptags }}</div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+          <button class="btn btn-primary btn-pill mt-4"><i class="bi bi-upload me-1"></i>Upload</button>
+        </form>
+
+        <div class="alert alert-secondary rounded-4 mt-4 mb-0">
+          <b>Tip:</b> If your dataset has different feature names, it's fine. The customer prediction form will be generated from the trained schema automatically.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card cloud-card">
+      <div class="card-body p-4 p-md-5">
+        <h5 class="fw-bold mb-3">Recent uploads</h5>
+        <div class="list-group list-group-flush">
+          {% for d in datasets %}
+            <div class="list-group-item d-flex justify-content-between align-items-center bg-transparent">
+              <div>
+                <div class="fw-semibold">{{ d.name }}</div>
+                <div class="text-muted small">{{ d.uploaded_at|date:"Y-m-d H:i" }}</div>
+              </div>
+              <a class="btn btn-outline-primary btn-pill" href="{% url 'ml_train' d.id %}"><i class="bi bi-play-fill me-1"></i>Train</a>
+            </div>
+          {% empty %}
+            <div class="list-group-item bg-transparent text-muted">No uploads yet.</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
