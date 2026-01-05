@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Result — HeartCloud{% endblock %}
+{% block content %}
+<div class="row g-3">
+  <div class="col-lg-5">
+    <div class="card cloud-card">
+      <div class="card-body p-4 p-md-5">
+        <h3 class="fw-bold mb-1">Prediction Result</h3>
+        <p class="text-muted mb-3">Best model: <b>{{ best_model_name }}</b> (Run #{{ run.id }})</p>
+
+        {% if best %}
+          {% if best.prediction == 1 %}
+            <div class="alert alert-danger rounded-4"><b>Risk Detected:</b> The system predicts <b>Heart Disease Present</b>.</div>
+          {% else %}
+            <div class="alert alert-success rounded-4"><b>Low Risk:</b> The system predicts <b>No Heart Disease</b>.</div>
+          {% endif %}
+
+          {% if best.probability != None %}
+            <div class="mt-3">
+              <div class="text-muted small">Probability (best model)</div>
+              <div class="display-6 fw-bold">{{ best.probability|floatformat:2 }} <span class="fs-6 text-muted">(0–1)</span></div>
+              <div class="progress" style="height: 10px; border-radius: 999px;">
+                <div class="progress-bar" role="progressbar" style="width: {{ best_percent }}%;"></div>
+              </div>
+              <div class="text-muted small mt-1">Risk probability ≈ {{ best_percent }}%</div>
+            </div>
+          {% else %}
+            <div class="text-muted small">Probability not available for this model.</div>
+          {% endif %}
+        {% else %}
+          <div class="alert alert-warning rounded-4">Best model artifact not found.</div>
+        {% endif %}
+
+        <div class="d-flex gap-2 mt-4">
+          <a class="btn btn-primary btn-pill w-100" href="{% url 'predict' %}"><i class="bi bi-arrow-repeat me-1"></i>New Prediction</a>
+        </div>
+        <p class="text-muted small mt-3 mb-0">Educational only — not medical advice.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="card cloud-card">
+      <div class="card-body p-4 p-md-5">
+        <h5 class="fw-bold">All model outputs</h5>
+        <p class="text-muted small">We run the same customer inputs through all 6 algorithms and highlight the best model (selected by highest cross-validation score during training).</p>
+
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Model</th>
+                <th>Prediction</th>
+                <th>Probability</th>
+                <th>CV score</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for name, r in results.items %}
+                <tr class="{% if name == best_model_name %}table-success{% endif %}">
+                  <td><b>{{ name }}</b></td>
+                  <td>{% if r.prediction == 1 %}<span class="badge text-bg-danger">Disease</span>{% else %}<span class="badge text-bg-success">No disease</span>{% endif %}</td>
+                  <td>{% if r.probability != None %}{{ r.probability|floatformat:3 }}{% else %}—{% endif %}</td>
+                  <td>{{ r.cv_metric|floatformat:4 }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="alert alert-secondary rounded-4 mb-0">
+          <b>Why this model is best:</b> It achieved the highest mean cross-validation score (CV score) on the selected metric for the latest dataset.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="card cloud-card">
+      <div class="card-body p-4 p-md-5">
+        <h5 class="fw-bold">Inputs used</h5>
+        <div class="row g-3">
+          {% for k, v in input.items %}
+            <div class="col-6 col-md-4 col-lg-3">
+              <div class="text-muted small">{{ k }}</div>
+              <div class="fw-semibold">{{ v }}</div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
