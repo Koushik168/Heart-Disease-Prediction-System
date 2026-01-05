@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}HeartCloud — Home{% endblock %}
+{% block content %}
+<div class="hero mb-4">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+    <div>
+      <div class="hero-badge mb-3"><i class="bi bi-shield-check"></i> Cloud ML • Secure Login • Explainable Results</div>
+      <h1 class="display-6 fw-bold mb-2">Heart Disease Prediction System</h1>
+      <p class="lead mb-0" style="opacity:0.92">
+        Admin uploads a heart-disease dataset → app runs preprocessing + EDA → trains 6 ML algorithms → selects the best model → customers predict with probability.
+      </p>
+    </div>
+    <div class="d-flex gap-2">
+      {% if user.is_authenticated %}
+        <a class="btn btn-primary btn-lg btn-pill" href="{% url 'dashboard' %}"><i class="bi bi-speedometer2 me-1"></i>Dashboard</a>
+        <a class="btn btn-soft btn-lg btn-pill" href="{% url 'predict' %}"><i class="bi bi-activity me-1"></i>Predict Now</a>
+      {% else %}
+        <a class="btn btn-primary btn-lg btn-pill" href="{% url 'register' %}"><i class="bi bi-person-plus me-1"></i>Create Account</a>
+        <a class="btn btn-soft btn-lg btn-pill" href="{% url 'login' %}"><i class="bi bi-box-arrow-in-right me-1"></i>Login</a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="hero-wave" aria-hidden="true"></div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-4">
+    <div class="card cloud-card h-100">
+      <div class="card-body p-4">
+        <h5 class="fw-bold"><i class="bi bi-cloud-arrow-up me-2 text-primary"></i>Admin ML Pipeline</h5>
+        <p class="text-muted mb-0">Upload any heart-disease CSV (UCI/Kaggle/Framingham). The app auto-detects the target column, handles missing values, and builds a flexible pipeline.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card cloud-card h-100">
+      <div class="card-body p-4">
+        <h5 class="fw-bold"><i class="bi bi-bar-chart-line me-2 text-primary"></i>EDA + Explainability</h5>
+        <p class="text-muted mb-0">Missing/null analysis, correlation heatmap, ROC curves, confusion matrices, and feature importance (permutation importance for the best model).</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card cloud-card h-100">
+      <div class="card-body p-4">
+        <h5 class="fw-bold"><i class="bi bi-activity me-2 text-primary"></i>Customer Prediction</h5>
+        <p class="text-muted mb-0">The customer form is generated dynamically from the latest trained dataset schema — so future datasets work without changing code.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
