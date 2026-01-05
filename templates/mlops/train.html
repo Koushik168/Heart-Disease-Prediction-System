@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Train — HeartCloud{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-xl-10">
+    <div class="card cloud-card">
+      <div class="card-body p-4 p-md-5">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+          <div>
+            <h2 class="fw-bold mb-1"><i class="bi bi-cpu me-2"></i>Train Models</h2>
+            <div class="text-muted">Dataset: <b>{{ dataset.name }}</b></div>
+            <div class="text-muted small">File: {{ dataset.csv_file.name }}</div>
+          </div>
+          <a class="btn btn-soft btn-pill" href="{% url 'ml_upload' %}"><i class="bi bi-arrow-left me-1"></i>Back</a>
+        </div>
+
+        <hr class="my-4">
+
+        <div class="row g-3">
+          <div class="col-lg-7">
+            <div class="card cloud-card">
+              <div class="card-body p-4">
+                <h5 class="fw-bold mb-2">Start Training</h5>
+                <p class="text-muted small mb-3">Runs preprocessing + EDA (missing values + correlations) and trains 6 algorithms: Logistic Regression, Decision Tree, Random Forest, SVM, KNN, Naive Bayes.</p>
+
+                <form method="post">
+                  {% csrf_token %}
+                  <label class="form-label fw-semibold">Model selection metric</label>
+                  <select class="form-select" name="selection_metric">
+                    <option value="roc_auc">ROC-AUC (recommended)</option>
+                    <option value="f1">F1</option>
+                    <option value="accuracy">Accuracy</option>
+                  </select>
+                  <button class="btn btn-primary btn-pill mt-3 w-100"><i class="bi bi-lightning-charge me-1"></i>Run Training Now</button>
+                </form>
+
+                <div class="alert alert-secondary rounded-4 mt-4 mb-0">
+                  <b>Auto target detection:</b> If your dataset uses a non-standard target name, HeartCloud will attempt to infer it. Best practice is to name it <b>target</b> or <b>HeartDisease</b>.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-5">
+            <div class="card cloud-card">
+              <div class="card-body p-4">
+                <h6 class="fw-bold"><i class="bi bi-check2-circle me-2"></i>What you will get</h6>
+                <ul class="text-muted small mb-0">
+                  <li>Missing / null values chart</li>
+                  <li>Correlation heatmap (numeric features)</li>
+                  <li>ROC curves</li>
+                  <li>Confusion matrix for each algorithm</li>
+                  <li>Feature importance for the best model</li>
+                  <li>Best model selection explanation (why it's best)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
