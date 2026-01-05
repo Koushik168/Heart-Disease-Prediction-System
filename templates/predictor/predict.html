@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Predict — HeartCloud{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-xl-10">
+    <div class="card cloud-card">
+      <div class="card-body p-4 p-md-5">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+          <div>
+            <h2 class="fw-bold mb-1"><i class="bi bi-activity me-2"></i>Heart Disease Prediction</h2>
+            {% if run %}
+              <div class="text-muted">Using latest training run: <b>#{{ run.id }}</b> — <b>{{ run.best_model_name }}</b> on <b>{{ run.dataset.name }}</b></div>
+              <div class="text-muted small">Features: {{ run.n_features }} • Target: {{ run.target_column }}</div>
+            {% else %}
+              <div class="text-muted">No training run found.</div>
+            {% endif %}
+          </div>
+          <div class="d-flex gap-2">
+            <a class="btn btn-soft btn-pill" href="{% url 'predict_history' %}"><i class="bi bi-clock-history me-1"></i>My History</a>
+          </div>
+        </div>
+
+        {% if form %}
+          <hr class="my-4"/>
+          <form method="post">
+            {% csrf_token %}
+            <div class="row g-3">
+              {% for field in form %}
+                <div class="col-md-6 col-lg-4">
+                  <label class="form-label fw-semibold">{{ field.label }}</label>
+                  {{ field }}
+                  {% if field.help_text %}
+                    <div class="small-help mt-1">{{ field.help_text|safe }}</div>
+                  {% endif %}
+                  {% if field.errors %}
+                    <div class="text-danger small">{{ field.errors|striptags }}</div>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+            <button class="btn btn-primary btn-lg btn-pill w-100 mt-4"><i class="bi bi-lightning-charge me-1"></i>Predict</button>
+          </form>
+          <p class="text-muted small mt-3 mb-0">Educational only — not a medical diagnosis.</p>
+        {% else %}
+          <div class="alert alert-warning mt-4 mb-0">Ask the admin to upload a dataset and train models first.</div>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
