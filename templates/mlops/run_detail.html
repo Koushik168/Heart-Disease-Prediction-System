@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% block title %}Run {{ run.id }} — Results{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+  <div>
+    <h2 class="fw-bold mb-0">Run #{{ run.id }} — Results</h2>
+    <div class="text-muted">Dataset: <b>{{ run.dataset.name }}</b> • Best model: <b>{{ run.best_model_name }}</b> (by {{ metric_key }})</div>
+    <div class="text-muted small">Rows: {{ run.n_rows }} • Features: {{ run.n_features }} • Target: {{ run.target_column }}</div>
+  </div>
+  <a class="btn btn-soft btn-pill" href="{% url 'ml_runs' %}"><i class="bi bi-arrow-left me-1"></i>Back to runs</a>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-6">
+    <div class="card cloud-card h-100">
+      <div class="card-body p-4">
+        <h5 class="fw-bold mb-2"><i class="bi bi-award me-2"></i>Why this is best</h5>
+        <p class="text-muted small mb-3">
+          We rank models using <b>{{ metric_key }}</b> (mean cross-validation score). The best model achieves the highest score and generalises better.
+        </p>
+        <ol class="small mb-0">
+          {% for name, score, vals in ranked %}
+            <li><b>{{ name }}</b> — {{ metric_key }}: {{ score|floatformat:4 }}, CV F1: {{ vals.cv_f1|floatformat:4 }}, CV Acc: {{ vals.cv_accuracy|floatformat:4 }}</li>
+          {% endfor %}
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card cloud-card h-100">
+      <div class="card-body p-4">
+        <h5 class="fw-bold mb-2"><i class="bi bi-diagram-3 me-2"></i>Schema (features)</h5>
+        <p class="text-muted small mb-3">Customer form is generated from these columns.</p>
+        <div class="row g-2">
+          {% for col in run.feature_columns %}
+            <div class="col-6 col-md-4">
+              <span class="badge-soft px-2 py-1 d-inline-flex">{{ col }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card cloud-card">
+      <div class="card-body p-4">
+        <h5 class="fw-bold mb-2"><i class="bi bi-clipboard2-data me-2"></i>EDA — Missing Values</h5>
+        {% if run.missing_plot %}
+          <img class="img-fluid rounded-4" src="{{ MEDIA_URL }}{{ run.missing_plot }}" alt="Missing values">
+        {% else %}
+          <p class="text-muted mb-0">Not available.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card cloud-card">
+      <div class="card-body p-4">
+        <h5 class="fw-bold mb-2"><i class="bi bi-grid-1x2 me-2"></i>EDA — Correlation</h5>
+        {% if run.correlation_plot %}
+          <img class="img-fluid rounded-4" src="{{ MEDIA_URL }}{{ run.correlation_plot }}" alt="Correlation">
+        {% else %}
+          <p class="text-muted mb-0">Not available.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="card cloud-card">
+      <div class="card-body p-4">
+        <h5 class="fw-bold mb-2"><i class="bi bi-graph-up me-2"></i>ROC Curves</h5>
+        {% if run.roc_plot %}
+          <img class="img-fluid rounded-4" src="{{ MEDIA_URL }}{{ run.roc_plot }}" alt="ROC Curves">
+        {% else %}
+          <p class="text-muted mb-0">Not available.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="card cloud-card">
+      <div class="card-body p-4">
+        <h5 class="fw-bold mb-2"><i class="bi bi-bar-chart-steps me-2"></i>Feature Importance (Best Model)</h5>
+        {% if run.feature_importance_plot %}
+          <img class="img-fluid rounded-4" src="{{ MEDIA_URL }}{{ run.feature_importance_plot }}" alt="Feature importance">
+        {% else %}
+          <p class="text-muted mb-0">Not available.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="card cloud-card">
+      <div class="card-body p-4">
+        <h5 class="fw-bold mb-3"><i class="bi bi-table me-2"></i>Per-model results</h5>
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Model</th>
+                <th>CV Accuracy</th>
+                <th>CV Precision</th>
+                <th>CV Recall</th>
+                <th>CV F1</th>
+                <th>{{ metric_key }}</th>
+                <th>Confusion Matrix</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for name, score, vals in ranked %}
+              <tr class="{% if name == run.best_model_name %}table-success{% endif %}">
+                <td><b>{{ name }}</b></td>
+                <td>{{ vals.cv_accuracy|floatformat:4 }}</td>
+                <td>{{ vals.cv_precision|floatformat:4 }}</td>
+                <td>{{ vals.cv_recall|floatformat:4 }}</td>
+                <td>{{ vals.cv_f1|floatformat:4 }}</td>
+                <td>{{ score|floatformat:4 }}</td>
+                <td>
+                  {% if vals.confusion_plot %}
+                    <img style="max-width:170px" class="img-fluid rounded-3" src="{{ MEDIA_URL }}{{ vals.confusion_plot }}" alt="CM">
+                  {% else %}
+                    <span class="text-muted">—</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-muted small mb-0">For medical use-cases, also evaluate calibration and PR-AUC if class imbalance exists.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
